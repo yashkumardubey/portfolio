@@ -1,0 +1,31 @@
+<form id="contactForm">
+  <input name="name" placeholder="Your name" required>
+  <input name="email" placeholder="Your email" type="email" required>
+  <textarea name="message" placeholder="Message" required></textarea>
+  <button type="submit">Send</button>
+</form>
+<div id="statusMsg"></div>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const data = {
+    name: e.target.name.value,
+    email: e.target.email.value,
+    message: e.target.message.value
+  };
+  const status = document.getElementById('statusMsg');
+  status.textContent = 'Sending...';
+  try {
+    const res = await fetch('/api/contact', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    const json = await res.json();
+    status.textContent = json.message || json.error;
+  } catch {
+    status.textContent = 'Something went wrong.';
+  }
+});
+</script>
